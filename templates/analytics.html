@@ -1,0 +1,47 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<!-- Card 1 - Bootstrap Brain Component -->
+<section class="py-3 py-md-5">
+    <div class="row justify-content-md-center">
+        <div class="col-12 col-md-9 col-lg-8 col-xl-7 col-xxl-6">
+          <h1 class="display-6 fw-bold mb-4 mb-md-5 mb-xxl-6 text-center">Your Link Analytics</h1>
+        </div>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8 col-xxl-7">
+          <div class="row gy-4">
+            <div class="">
+              <div class="card widget-card border-light shadow-sm">
+                <div class="card-body p-4">
+                  <div class="row">
+                    <div class="col-8">
+                      <h3 class="card-title widget-card-title mb-3">Total Clicks Received</h3>
+                      <h1 class="card-subtitle text-body-secondary fw-bolder m-3" >{{links.visits}}</h1>
+                      <h5 class="card-title widget-card-title mb-3">Name - {{links.name}}</h5>
+                      <a href="{{links.short_url}}" target=”_blank”>{{links.short_url}}</a>
+                      
+                    </div>
+                    <div class="col-4">
+                      <div class="d-flex justify-content-end">
+                        <div class="lh-1 text-white bg-info rounded-circle p-3 d-flex align-items-center justify-content-center">
+                            <i class="las la-mouse"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+{% endblock content%}
