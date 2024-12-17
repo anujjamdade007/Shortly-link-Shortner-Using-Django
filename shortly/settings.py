@@ -99,8 +99,8 @@ WSGI_APPLICATION = 'shortly.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('NAME'),
-        'USER': 'postgres',
+        'NAME': 'shortlydb',
+        'USER': 'shortlyuser',
         'PASSWORD': os.getenv('PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432',
