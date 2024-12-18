@@ -1,18 +1,36 @@
-version: "3.9"
-   
+version: '3.8'
+
 services:
   db:
-    image: nouchka/sqlite3:latest
+    image: postgres:13
     volumes:
-      - ./data/db:/root/db
+      - pg_data:/var/lib/postgresql/data
     environment:
-      - SQLITE3_DB=db.sqlite3
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - app_network
+
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
+    environment:
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  pg_data:

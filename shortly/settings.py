@@ -32,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  
+DEBUG = os.getenv('DEBUG')  
 
 # (False only for production)
 
@@ -95,17 +95,35 @@ WSGI_APPLICATION = 'shortly.wsgi.application'
 #     }
 # }
 
+import os
+from urllib.parse import urlparse
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shortlydb',
-        'USER': 'shortlyuser',
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '5432',
+# Use different database configurations depending on the environment
+if os.getenv('DEBUG') == 'True':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'shortlydb',
+            'USER': 'postgres',
+            'PASSWORD': 'Anuj@123',
+            'HOST': 'db',
+            'PORT': '5432',
+        }
     }
-}
+else:
+    # Production database configuration using DATABASE_URL
+    url = urlparse(os.getenv('DATABASE_URL'))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': url.path[1:],
+            'USER': url.username,
+            'PASSWORD': url.password,
+            'HOST': url.hostname,
+            'PORT': url.port,
+        }
+    }
+
 
 
 # Password validation

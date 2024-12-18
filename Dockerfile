@@ -1,10 +1,26 @@
-# syntax=docker/dockerfile:1
+# Use the official Python image from Docker Hub
+FROM python:3.11-slim
 
-FROM python:3.11.5-slim-bullseye
+# Set the working directory in the container
+WORKDIR /app
 
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
+# Install Python dependencies
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project into the container
+COPY . /app/
+
+# Set environment variables for Django
 ENV PYTHONUNBUFFERED=1
-WORKDIR /code
-COPY requirements.txt /code/
-RUN pip install -r requirements.txt
-COPY . /code/
+
+# Expose the port that Django runs on
+EXPOSE 8000
+
+# Command to run the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
