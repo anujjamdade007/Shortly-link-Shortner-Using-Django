@@ -19,8 +19,8 @@ COPY . /app/
 # Set environment variables for Django
 ENV PYTHONUNBUFFERED=1
 
-# Expose the port that Django runs on
-EXPOSE 8000
+# Expose the port that Django runs on (port 80)
+EXPOSE 80
 
-# Command to run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Command to run the application (use port 80)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
