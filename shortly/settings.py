@@ -37,7 +37,8 @@ DEBUG = os.getenv('DEBUG')
 # (False only for production)
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://shortly.anujjamdade.site/','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://shortly.anujjamdade.site','https://*.127.0.0.1']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
