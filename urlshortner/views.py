@@ -103,7 +103,7 @@ def dashboard(request):
             urls.objects.create(name=name , link= link , unique_code=unique_code , short_url=short_url , created_by = request.user)
             messages.success(request , 'Link is succesfully created')
             return redirect('dashboard')
-    print(total_visits["visits__sum"])
+    # print(total_visits["visits__sum"])
     context={
         'links':links,
         'total_visits':total_visits
