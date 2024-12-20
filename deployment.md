@@ -210,8 +210,50 @@ dokku ps:restart shortly
 
 Once you've completed these steps, your **Shortly Link Shortener** app should be up and running on **Dokku**, complete with a secure SSL certificate and a working PostgreSQL database.
 
-Feel free to explore Dokku further and scale your application as needed!
+Creating a **superuser** for your application, especially for a **Django** project, is an important step in managing your app's admin panel. Below are the steps on how to do that along with other necessary configurations using **Dokku**.
 
 ---
 
-This format makes the documentation more user-friendly, informative, and visually appealing.
+## 🔑 **Creating a Superuser for Your Django App**
+
+If you're using **Django** and need to create a superuser, follow these steps.
+
+### 📋 **Step 1: Access the Application’s Container**
+
+First, you need to access the running container where your app is deployed. Use the following command to open a **bash shell** within your container.
+
+```bash
+dokku run shortly bash
+```
+
+This command will log you into the container for the `shortly` app.
+
+### 🛠️ **Step 2: Create the Superuser**
+
+Once you're inside the container, you can run Django's management command to create a superuser. The command to create a superuser in Django is:
+
+```bash
+python manage.py createsuperuser
+```
+
+You'll be prompted to enter a **username**, **email address**, and **password** for the superuser.
+
+#### Example Prompt:
+```bash
+Username (leave blank to use 'root'): admin
+Email address: admin@example.com
+Password: ********
+Password (again): ********
+```
+
+After filling out the prompts, the superuser will be created successfully!
+
+### 🏁 **Step 3: Exit the Container**
+
+Once the superuser is created, you can exit the container by typing:
+
+```bash
+exit
+```
+
+---

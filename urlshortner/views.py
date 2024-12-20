@@ -1,9 +1,6 @@
 
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from .forms import UserForm, UserRegistrationForm
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -11,6 +8,11 @@ from . models import urls
 import randomcharactergenerator
 from django.db.models import Avg, Count, Min, Sum
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
+from .forms import UserRegisterForm, UserLoginForm
 
 # Create your views here.
 
@@ -19,73 +21,60 @@ def home(request):
 
 #Login/ Logout/ Register
 
-
-def userlogin(request):
-    page= 'login'
-    form = UserForm()
-    #hide the login page for alredy logged users
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    
+# Register user view
+def registeruser(request):
+    if request.user.is_authenticated:  # Check if user is already logged in
+        return redirect('home')  # Redirect to home page if the user is authenticated
 
     if request.method == 'POST':
-        username = request.POST["username"].lower()
-        password = request.POST["password"]
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            # Save the new user with first_name and last_name
+            user = form.save()
 
-        try:
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request , 'username not found')
-
-        user = authenticate(request , username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            messages.success(request ,"User Successfully Logged In")
-
-            return redirect('home')
+            # Store success message and redirect to login page
+            username = form.cleaned_data.get('username')
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            messages.success(request, f'Account created successfully for {first_name} {last_name}! You can now log in.')
+            return redirect('login')  # Redirect to login page after successful registration
         else:
-            messages.error(request ,"Username or Password not found")
-        
-    
-    context={'page':page,
-             'form':form,}
-        
-    return render(request ,'login.html' , context)
+            messages.error(request, 'There was an error with your registration. Please try again.')  # Error message
+    else:
+        form = UserRegisterForm()
 
+    return render(request, 'signup.html', {'form': form})
+
+# Login user view
+def userlogin(request):
+    if request.user.is_authenticated:  # Check if user is already logged in
+        return redirect('home')  # Redirect to home page if the user is authenticated
+
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome back, {username}!')
+                return redirect('home')  # Redirect to a home page after successful login
+            else:
+                messages.error(request, 'Invalid username or password. Please try again.')  # Invalid credentials
+        else:
+            messages.error(request, 'Please fill in both username and password.')  # Form validation error
+    else:
+        form = UserLoginForm()
+
+    return render(request, 'login.html', {'form': form})
+
+# Logout user view
 def logoutuser(request):
     logout(request)
-    messages.success(request , 'User Is succesfully logged out')
-    return redirect('login')
-
-def registeruser(request):
-    page= 'register'
-    form = UserRegistrationForm()
-
-    #hide the register page for alredy logged users
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST )
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-
-            messages.success(request , 'user is succesfully created')
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request , 'something went wrong')
-
-
-    context={
-        'page':page,
-        'form':form,
-        }
-    return render(request , 'signup.html' , context )
-
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('login')  # Redirect to login page after logout
 
 
 

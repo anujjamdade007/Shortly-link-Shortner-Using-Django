@@ -1,29 +1,18 @@
-from django.contrib.auth.models import User
 from django import forms
-    
-class UserForm(forms.ModelForm):
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+
+# Registration form to create a new user
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+    first_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=100, required=True)
+
     class Meta:
         model = User
-        fields = ['username', 'password']
-        widgets = {
-            'password': forms.PasswordInput(render_value=True),
-        }
-    
-class UserRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 
-    		    'password', 
-    		    'email', 
-    		    'first_name', 
-    		    'last_name'
-                ]
-        widgets = {
-            'password': forms.PasswordInput(render_value=True),
-        }
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
-        def __init__(self, *args, **kwargs):
-            super(UserRegistrationForm, self).__init__(*args, **kwargs)
-
-            for name, field in self.fields.items():
-                field.widget.attrs.update({'class': 'input'})
+# Login form for users
+class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(max_length=255)
+    password = forms.CharField(widget=forms.PasswordInput)
